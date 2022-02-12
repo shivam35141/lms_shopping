@@ -90,7 +90,7 @@ const Cart = (props) => {
           />
           <View style={styles.bottomContainer}>
             <Left>
-                <Text style={styles.price}>$ {totalPrice}</Text>
+                <Text style={styles.price}>₹ {totalPrice}</Text>
             </Left>
             <Right>
                 <EasyButton
@@ -125,8 +125,8 @@ const Cart = (props) => {
         </Container>
       ) : (
         <Container style={styles.emptyContainer}>
-          <Text>Looks like your cart is empty</Text>
-          <Text>Add products to your cart to get started</Text>
+          <Text>Sry, Looks like your cart is empty o_O</Text>
+          {/* <Text>Add products to your cart to get started</Text> */}
         </Container>
       )}
     </>

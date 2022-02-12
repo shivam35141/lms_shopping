@@ -48,6 +48,7 @@ const SingleProduct = (props) => {
                 <View style={styles.contentContainer}>
                     <H1 style={styles.contentHeader}>{item.name}</H1>
                     <Text style={styles.contentText}>{item.brand}</Text>
+                    <Text style={styles.contentText}>Quantity: {item.countInStock}</Text>
                 </View>
                 <View style={styles.availabilityContainer}>
                     <View style={styles.availability}>
@@ -62,7 +63,7 @@ const SingleProduct = (props) => {
 
             <View style={styles.bottomContainer}>
                 <Left>
-                    <Text style={styles.price}>$ {item.price}</Text>
+                    <Text style={styles.price}>₹ {item.price}</Text>
                 </Left>
                 <Right>
                    <EasyButton 

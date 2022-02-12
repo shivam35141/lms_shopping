@@ -117,7 +117,7 @@ const OrderCard = (props) => {
         <Text>Date Ordered: {props.dateOrdered.split("T")[0]}</Text>
         <View style={styles.priceContainer}>
           <Text>Price: </Text>
-          <Text style={styles.price}>$ {props.totalPrice}</Text>
+          <Text style={styles.price}>₹ {props.totalPrice}</Text>
         </View>
         {props.editMode ? (
           <View>

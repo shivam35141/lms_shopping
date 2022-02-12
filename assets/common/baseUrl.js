@@ -7,5 +7,6 @@ let baseURL = '';
 ? baseURL = 'http://192.168.0.179:3000/api/v1/'
 : baseURL = 'http://localhost:3000/api/v1/'
 }
-
+// 192.168.0.179
+// 192.168.246.203
 export default baseURL;
