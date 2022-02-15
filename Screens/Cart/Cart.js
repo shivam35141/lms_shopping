@@ -114,7 +114,7 @@ const Cart = (props) => {
                 <EasyButton
                   secondary
                   medium
-                  onPress={() => props.navigation.navigate('Login')}
+                  onPress={() => props.navigation.navigate("Login")}
                 >
                 <Text style={{ color: 'white' }}>Login</Text>
                 </EasyButton>

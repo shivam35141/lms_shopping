@@ -14,11 +14,13 @@ import {
     Body,
     Title
 } from 'native-base';
+import RNUpiPayment from 'react-native-upi-payment'
 
 const methods = [
     { name: 'Cash on Delivery', value: 1 },
-    { name: 'Bank Transfer', value: 2 },
-    { name: 'Card Payment', value: 3}
+    // { name: 'Bank Transfer', value: 2 },
+    // { name: 'Card Payment', value: 3},
+    {name:'UPI',value:4}
 ]
 
 const paymentCards = [
@@ -54,7 +56,20 @@ const Payment = (props) => {
                        </ListItem>
                    )
                })}
-               {selected == 3 ? (
+               {selected == 4 ? (
+                  RNUpiPayment.initializePayment({
+                    vpa: '9767193942@upi', // or can be john@ybl or mobileNo@upi
+                    payeeName: 'Leimakhong Bistro',
+                    amount: '25',
+                    transactionRef: 'aasf-332-aoei-fn'
+                  }, ()=>{
+
+                  }, ()=>{
+
+                  })
+
+               ) : null }
+               {/* {selected == 3 ? (
                    <Picker
                     mode="dropdown"
                     iosIcon={<Icon name={"arrow-down"} />}
@@ -71,7 +86,7 @@ const Payment = (props) => {
                            value={c.name} />
                        })}
                    </Picker>
-               ) : null }
+               ) : null } */}
                <View style={{ marginTop: 60, alignSelf: 'center' }}>
                        <Button 
                        title={"Confirm"} 

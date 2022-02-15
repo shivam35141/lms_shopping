@@ -32,7 +32,7 @@ export const loginUser = (user, dispatch) => {
             text1: "Please provide correct credentials",
             text2: ""
         });
-        logoutUser(dispatch)
+        // logoutUser(dispatch)
     });
 };
 
