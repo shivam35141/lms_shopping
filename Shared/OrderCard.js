@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Picker } from "native-base";
+import { View, Text, StyleSheet,FlatList } from "react-native";
+import { Left, ListItem, Picker, Right } from "native-base";
 import Icon from "react-native-vector-icons/FontAwesome";
 import TrafficLight from "./StyledComponents/TrafficLight";
 import EasyButton from "./StyledComponents/EasyButton";
@@ -11,9 +11,9 @@ import axios from "axios";
 import baseURL from "../assets/common/baseUrl";
 
 const codes = [
-  { name: "pending", code: "3" },
-  { name: "shipped", code: "2" },
-  { name: "delivered", code: "1" },
+  { name: "received", code: "3" },
+  { name: "preparing", code: "2" },
+  { name: "Ready", code: "1" },
 ];
 
 const OrderCard = (props) => {
@@ -34,15 +34,15 @@ const OrderCard = (props) => {
 
     if (props.status == "3") {
       setOrderStatus(<TrafficLight unavailable></TrafficLight>);
-      setStatusText("pending");
+      setStatusText("received");
       setCardColor("#E74C3C");
     } else if (props.status == "2") {
       setOrderStatus(<TrafficLight limited></TrafficLight>);
-      setStatusText("shipped");
+      setStatusText("preparing");
       setCardColor("#F1C40F");
     } else {
       setOrderStatus(<TrafficLight available></TrafficLight>);
-      setStatusText("delivered");
+      setStatusText("Ready");
       setCardColor("#2ECC71");
     }
 
@@ -74,6 +74,7 @@ const OrderCard = (props) => {
       user: props.user,
       zip: props.zip,
     };
+    console.log("ModifyOrder===========>",order)
 
     axios
       .put(`${baseURL}orders/${props.id}`, order, config)
@@ -109,12 +110,29 @@ const OrderCard = (props) => {
         <Text>
           Status: {statusText} {orderStatus}
         </Text>
+        <Text>Name: {props.name}</Text>
         <Text>
-          Address: {props.shippingAddress1} {props.shippingAddress2}
+          Order Description : {props.shippingAddress1} 
         </Text>
-        <Text>City: {props.city}</Text>
-        <Text>Country: {props.country}</Text>
+          <Text>
+          Contact No: {props.phone}
+        </Text>
+        {/* <Text>City: {props.city}</Text>
+        <Text>Country: {props.country}</Text> */}
         <Text>Date Ordered: {props.dateOrdered.split("T")[0]}</Text>
+        <Text style={{marginTop:10}}>Order Items</Text>
+        {props.orderItems.map((item, index) => {
+                   return (
+                       <ListItem key={item._id}>
+                           <Left>
+                            <Text>{item.product.name}</Text>
+                           </Left>
+                           <Right>
+                           <Text>qty:{item.quantity}</Text>
+                           </Right>
+                       </ListItem>
+                   )
+               })}
         <View style={styles.priceContainer}>
           <Text>Price: </Text>
           <Text style={styles.price}>₹ {props.totalPrice}</Text>
@@ -150,7 +168,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     margin: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   title: {
     backgroundColor: "#62B1F6",
@@ -159,7 +177,7 @@ const styles = StyleSheet.create({
   priceContainer: {
     marginTop: 10,
     alignSelf: "flex-end",
-    flexDirection: "row",
+    flexDirection: "row"
   },
   price: {
     color: "white",

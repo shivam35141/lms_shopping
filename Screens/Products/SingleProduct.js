@@ -7,7 +7,13 @@ import TrafficLight from '../../Shared/StyledComponents/TrafficLight'
 
 import { connect } from 'react-redux';
 import * as actions from '../../Redux/Actions/cartActions';
-
+import store from "../../Redux/store";
+var currentstore;
+const unsubscribe = store.subscribe(() =>{
+currentstore=store.getState()
+console.log(currentstore);
+}
+);
 const SingleProduct = (props) => {
 
     const [item, setItem] = useState(props.route.params.item);
@@ -20,7 +26,7 @@ const SingleProduct = (props) => {
             setAvailabilityText("Unvailable")
         } else if (props.route.params.item.countInStock <= 5) {
             setAvailability(<TrafficLight limited></TrafficLight>);
-            setAvailabilityText("Limited Stock")
+            setAvailabilityText("Limited Stock < 5")
         } else {
             setAvailability(<TrafficLight available></TrafficLight>);
             setAvailabilityText("Available")
@@ -47,17 +53,17 @@ const SingleProduct = (props) => {
                 </View>
                 <View style={styles.contentContainer}>
                     <H1 style={styles.contentHeader}>{item.name}</H1>
-                    <Text style={styles.contentText}>{item.brand}</Text>
-                    <Text style={styles.contentText}>Quantity: {item.countInStock}</Text>
+                    <Text style={styles.contentText}>A Product of {item.brand} Leimakhong</Text>
+                    <Text style={styles.contentText}>Quantity Left : Only {item.countInStock} {availability}</Text>
                 </View>
                 <View style={styles.availabilityContainer}>
                     <View style={styles.availability}>
-                        <Text style={{ marginRight: 10 }}>
+                        {/* <Text style={{ marginRight: 10 }}>
                             Availability: {availabilityText}
                         </Text>
-                        {availability}
+                        {availability} */}
                     </View>
-                    <Text>{item.description}</Text>
+                    {/* <Text>{item.description}</Text> */}
                 </View>
             </ScrollView>
 
@@ -65,11 +71,12 @@ const SingleProduct = (props) => {
                 <Left>
                     <Text style={styles.price}>₹ {item.price}</Text>
                 </Left>
+                {item.countInStock>0?
                 <Right>
                    <EasyButton 
                    primary
                    medium
-                   onPress={() => {props.addItemToCart(item.id),
+                   onPress={() => {props.addItemToCart(item.id,item.price),
                         Toast.show({
                             topOffset: 60,
                             type: "success",
@@ -80,7 +87,7 @@ const SingleProduct = (props) => {
                    >
                        <Text style={{ color: 'white'}}>Add</Text>
                    </EasyButton>
-                </Right>
+                </Right>:null}
             </View>
         </Container>
     )
@@ -89,8 +96,11 @@ const SingleProduct = (props) => {
 
 const mapToDispatchToProps = (dispatch) => {
     return {
-        addItemToCart: (product) => 
-            dispatch(actions.addToCart({quantity: 1, product}))
+        addItemToCart: (product,itemprice) => {
+        const shop=currentstore
+            dispatch(actions.addToCart({quantity: 1, product,shopNo:shop.shopNo,price:itemprice}))
+            console.log("current state=====>",currentstore,product)
+        }
     }
 }
 

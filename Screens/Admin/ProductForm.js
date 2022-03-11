@@ -18,7 +18,9 @@ import AsyncStorage from "@react-native-community/async-storage"
 import baseURL from "../../assets/common/baseUrl"
 import axios from "axios"
 import * as ImagePicker from "expo-image-picker"
+// import ImagePicker from 'react-native-image-crop-picker';
 import mime from "mime";
+import store from "../../Redux/store";
 
 const ProductForm = (props) => {
     
@@ -39,6 +41,7 @@ const ProductForm = (props) => {
     const [richDescription, setRichDescription] = useState();
     const [numReviews, setNumReviews] = useState(0);
     const [item, setItem] = useState(null);
+    const state = store.getState();
 
     useEffect(() => {
 
@@ -64,7 +67,7 @@ const ProductForm = (props) => {
 
         // Categories
         axios
-            .get(`${baseURL}categories`)
+            .get(`${baseURL}categories?shopNo=${state.shopNo}`)
             .then((res) => setCategories(res.data))
             .catch((error) => alert("Error to load categories"));
 
@@ -86,18 +89,31 @@ const ProductForm = (props) => {
     }, [])
 
     const pickImage = async () => {
+        console.log("open images====================>")
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
-            quality: 1
+            quality: 1,
+            presentationStyle: 0
         });
+        console.log("image",result)
 
         if (!result.cancelled) {
             setMainImage(result.uri);
             setImage(result.uri);
         }
     };
+    // const pickImage = async () => {
+    //     console.log("open images====================>")
+    //     ImagePicker.openPicker({
+    //         width: 300,
+    //         height: 400,
+    //         cropping: true
+    //       }).then(image => {
+    //         console.log(image);
+    //       });
+    // };
 
     const addProduct = () => {
         if (
@@ -130,6 +146,7 @@ const ProductForm = (props) => {
         formData.append("rating", rating);
         formData.append("numReviews", numReviews);
         formData.append("isFeatured", isFeatured);
+        formData.append("shopNo",state.shopNo)
 
         const config = {
             headers: {

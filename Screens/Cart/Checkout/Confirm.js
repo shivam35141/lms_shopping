@@ -34,7 +34,7 @@ const Confirm = (props) => {
               .get(`${baseURL}products/${cart.product}`)
               .then((data) => {
                 products.push(data.data);
-                setProductUpdate(products);
+                setProductUpdate([...products]);
               })
               .catch((e) => {
                 console.log(e);
@@ -46,21 +46,12 @@ const Confirm = (props) => {
 
   const confirmOrder = () => {
     const order = finalOrder.order.order;
+    console.log("place order",order)
     axios
       .post(`${baseURL}orders`, order)
       .then((res) => {
-        if (res.status == 200 || res.status == 201) {
-          Toast.show({
-            topOffset: 60,
-            type: "success",
-            text1: "Order Completed",
-            text2: "",
-          });
-          setTimeout(() => {
-            props.clearCart();
-            props.navigation.navigate("Cart");
-          }, 500);
-        }
+        console.log("api response order confirm",res.data)
+        props.navigation.navigate("Payment", {order: res.data })
       })
       .catch((error) => {
         Toast.show({
@@ -75,24 +66,25 @@ const Confirm = (props) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>Confirm Order</Text>
+        <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom:10 }}>Confirm Order</Text>
         {props.route.params ? (
-          <View style={{ borderWidth: 1, borderColor: "orange" }}>
-            <Text style={styles.title}>Shipping to:</Text>
+          <View style={{ borderWidth: 1, borderColor: "grey"}}>
+            {/* <Text style={styles.title}>Shipping to:</Text> */}
             <View style={{ padding: 8 }}>
-              <Text>Address: {finalOrder.order.order.shippingAddress1}</Text>
-              <Text>Address2: {finalOrder.order.order.shippingAddress2}</Text>
-              <Text>City: {finalOrder.order.order.city}</Text>
-              <Text>Zip Code: {finalOrder.order.order.zip}</Text>
-              <Text>Country: {finalOrder.order.order.country}</Text>
+            <Text>Name: {finalOrder.order.order.name}</Text>
+              <Text>Contact No: {finalOrder.order.order.phone}</Text>
+              {/* <Text>Address2: {finalOrder.order.order.shippingAddress1}</Text> */}
+              {/* <Text>City: {finalOrder.order.order.city}</Text> */}
+              {/* <Text>Zip Code: {finalOrder.order.order.zip}</Text> */}
+              {/* <Text>Country: {finalOrder.order.order.country}</Text> */}
             </View>
-            <Text style={styles.title}>Items:</Text>
+            <Text style={styles.underline}> Items Selected:</Text>
             {/* CHANGE THIS */}
             {productUpdate && (
               <>
                 {productUpdate.map((x) => {
                   return (
-                    <ListItem style={styles.listItem} key={x.name} avatar>
+                    <ListItem style={styles.listItem} key={x.id} avatar>
                       <Left>
                         <Thumbnail source={{ uri: x.image }} />
                       </Left>
@@ -132,6 +124,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     backgroundColor: "white",
   },
+  underline: {textDecorationLine: 'underline',color:"grey"},
   titleContainer: {
     justifyContent: "center",
     alignItems: "center",

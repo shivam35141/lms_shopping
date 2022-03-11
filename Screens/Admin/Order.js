@@ -5,11 +5,13 @@ import baseURL from "../../assets/common/baseUrl"
 import { useFocusEffect } from "@react-navigation/native"
 
 import OrderCard from "../../Shared/OrderCard"
+import store from "../../Redux/store";
 
 
 const Orders = (props) => {
 
     const [orderList, setOrderList] = useState();
+    const state = store.getState();
 
     useFocusEffect(
         useCallback(
@@ -26,7 +28,7 @@ const Orders = (props) => {
 
     const getOrders = () => {
         axios
-        .get(`${baseURL}orders`)
+        .get(`${baseURL}orders?shopNo=${state.shopNo}`)
         .then((x) => {
             setOrderList(x.data);
         })

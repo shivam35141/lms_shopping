@@ -8,6 +8,7 @@ import HomeNavigator from "./HomeNavigator";
 import CartNavigator from "./CartNavigator";
 import UserNavigator from "./UserNavigator";
 import AdminNavigator from "./AdminNavigator";
+import AdminHomeNavigator from "./AdminHomeNavigator";
 
 import CartIcon from "../Shared/CartIcon";
 import AuthGlobal from "../Context/store/AuthGlobal";
@@ -27,8 +28,21 @@ const Main = () => {
         activeTintColor: "#e91e63",
       }}
     >
+      {context.stateUser.user.isAdmin == true ? (
       <Tab.Screen
         name="Home"
+        component={AdminHomeNavigator}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="home" color={color} size={30} />
+          ),
+        }}
+      />
+      ): null }
+
+      {context.stateUser.user.isAdmin != true ? (
+       <Tab.Screen
+        name="HomeAdmin"
         component={HomeNavigator}
         options={{
           tabBarIcon: ({ color }) => (
@@ -36,6 +50,9 @@ const Main = () => {
           ),
         }}
       />
+      ): null }
+
+
       <Tab.Screen
         name="Cart"
         component={CartNavigator}

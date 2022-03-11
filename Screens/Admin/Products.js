@@ -17,6 +17,7 @@ import axios from "axios"
 import baseURL from "../../assets/common/baseUrl"
 import AsyncStorage from "@react-native-community/async-storage"
 import EasyButton from "../../Shared/StyledComponents/EasyButton";
+import store from "../../Redux/store";
 
 var { height, width } = Dimensions.get("window")
 
@@ -27,17 +28,20 @@ const ListHeader = () => {
             style={styles.listHeader}
         >
             <View style={styles.headerItem}></View>
-            <View style={styles.headerItem}>
+            {/* <View style={styles.headerItem}>
                 <Text style={{ fontWeight: '600'}}>Brand</Text>
+            </View> */}
+            <View style={styles.headerItem}>
+                <Text style={{ fontWeight: 'bold'}}>Name</Text>
             </View>
             <View style={styles.headerItem}>
-                <Text style={{ fontWeight: '600'}}>Name</Text>
+                <Text style={{ fontWeight: 'bold'}}>Category</Text>
             </View>
             <View style={styles.headerItem}>
-                <Text style={{ fontWeight: '600'}}>Category</Text>
+                <Text style={{ fontWeight: 'bold'}}>Price</Text>
             </View>
             <View style={styles.headerItem}>
-                <Text style={{ fontWeight: '600'}}>Price</Text>
+                <Text style={{ fontWeight: 'bold'}}>Qty</Text>
             </View>
         </View>
     )
@@ -49,6 +53,8 @@ const Products = (props) => {
     const [productFilter, setProductFilter] = useState();
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState();
+    const state = store.getState();
+    console.log("stat=====>",state)
 
     useFocusEffect(
         useCallback(
@@ -61,7 +67,7 @@ const Products = (props) => {
                     .catch((error) => console.log(error))
 
                 axios
-                    .get(`${baseURL}products`)
+                    .get(`${baseURL}products?shopNo=${state.shopNo}`)
                     .then((res) => {
                         setProductList(res.data);
                         setProductFilter(res.data);
@@ -131,10 +137,10 @@ const Products = (props) => {
         </View>
       <View>
           <Header searchBar rounded>
-              <Item style={{ padding: 5 }}>
+              <Item style={{ padding: 5 , borderRadius: 10}}>
                   <Icon name="search" />
                   <Input 
-                    placeholder="Search"
+                    placeholder="Search Products"
                     onChangeText={(text) => searchProduct(text)}
                   />
               </Item>
@@ -143,7 +149,7 @@ const Products = (props) => {
 
       {loading ? (
           <View style={styles.spinner}> 
-              <ActivityIndicator size="large" color="red" />
+              <ActivityIndicator size="large" color="green" />
           </View>
       ) : (
           <FlatList 
@@ -171,8 +177,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'gainsboro'
     },
     headerItem: {
-        margin: 3,
-        width: width / 6
+        margin: 2,
+        width: width / 4.8
     },
     spinner: {
         height: height / 2,

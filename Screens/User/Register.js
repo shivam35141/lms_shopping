@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, Button,Image } from "react-native";
 import FormContainer from "../../Shared/Form/FormContainer";
 import Input from "../../Shared/Form/Input";
 import Error from "../../Shared/Error";
@@ -29,7 +29,6 @@ const Register = (props) => {
       phone: phone,
       isAdmin: false,
     };
-    console.log(`${baseURL}users/register`)
     axios
       .post(`${baseURL}users/register`, user)
       .then((res) => {
@@ -56,13 +55,17 @@ const Register = (props) => {
   };
 
   return (
-    <KeyboardAwareScrollView
-      viewIsInsideTabBar={true}
-      extraHeight={200}
-      enableOnAndroid={true}
-    >
-      <FormContainer title={"Register"}>
-        <Input
+    // <KeyboardAwareScrollView
+    //   viewIsInsideTabBar={true}
+    //   extraHeight={200}
+    //   enableOnAndroid={true}
+    // >
+      <FormContainer style={styles.container} title={""}>
+      {/* <Image style={styles.image} source={{ uri: 'https://i.imgur.com/s9syolg.png' }} /> */}
+        
+        
+      <Image style={styles.image} source={{ uri: 'http://18.217.131.129:3000/public/uploads/man_profile.png' }} />
+        <Input 
           placeholder={"Email"}
           name={"email"}
           id={"email"}
@@ -81,7 +84,7 @@ const Register = (props) => {
           keyboardType={"numeric"}
           onChangeText={(text) => setPhone(text)}
         />
-        <Input
+        <Input style={{marginBottom:10}}
           placeholder={"Password"}
           name={"password"}
           id={"password"}
@@ -90,31 +93,78 @@ const Register = (props) => {
         />
         <View style={styles.buttonGroup}>
           {error ? <Error message={error} /> : null}
-        </View>
-        <View>
-          <EasyButton large primary onPress={() => register()}>
-            <Text style={{ color: "white" }}>Register</Text>
+          <EasyButton style={styles.RegisterBtn} large primary onPress={() => register()}>
+            <Text style={{ color: "white" }}>REGISTER</Text>
           </EasyButton>
-        </View>
-        <View>
-          <EasyButton
+        {/* </View > */}
+        {/* <View  style={styles.buttonGroup}> */}
+          <EasyButton style={styles.loginBtn}
             large
             secondary
             onPress={() => props.navigation.navigate("Login")}
           >
-            <Text style={{ color: "white" }}>Back to Login</Text>
+            <Text style={{ color: "white"}}>Back To Login</Text>
           </EasyButton>
         </View>
       </FormContainer>
-    </KeyboardAwareScrollView>
+    // </KeyboardAwareScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   buttonGroup: {
     width: "80%",
-    margin: 10,
+    // margin: 5,
+    marginTop: 15,
     alignItems: "center",
+  },
+
+  image :{
+    marginBottom: 10,
+    marginTop:0,
+    width: 200, height: 200
+ 
+  },
+  inputView: {
+    backgroundColor: "#FFC0CB",
+    borderRadius: 30,
+    width: "70%",
+    height: 45,
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  
+  TextInput: {
+    height: 50,
+    flex: 1,
+    padding: 10,
+    marginLeft: 20,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  loginBtn: {
+    width: "50%",
+    borderRadius: 25,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    // marginTop: 40,
+    backgroundColor: "#87ceeb",
+  },
+
+  RegisterBtn: {
+    width: "70%",
+    borderRadius: 25,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    
+    backgroundColor: "#98fb98",
   },
 });
 

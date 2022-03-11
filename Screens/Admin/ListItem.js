@@ -84,10 +84,11 @@ const ListItem = (props) => {
                     resizeMode="contain"
                     style={styles.image}
                 />
-                <Text style={styles.item}>{props.brand}</Text>
+                {/* <Text style={styles.item}>{props.brand}</Text> */}
                 <Text style={styles.item} numberOfLines={1} ellipsizeMode="tail">{props.name}</Text>
                 <Text style={styles.item} numberOfLines={1} ellipsizeMode="tail">{props.category.name}</Text>
                 <Text style={styles.item}>₹ {props.price}</Text>
+                <Text style={styles.item}> {props.countInStock}</Text>
             </TouchableOpacity>
         </View>
     )
@@ -107,8 +108,9 @@ const styles = StyleSheet.create({
     },
     item: {
         flexWrap: "wrap",
-        margin: 3,
-        width: width / 6
+        margin: 4,
+    
+        width: width / 4.8
     },
     centeredView: {
         flex: 1,

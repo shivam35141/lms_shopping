@@ -4,20 +4,66 @@ import Swiper from "react-native-swiper/src";
 
 var { width } = Dimensions.get("window");
 
-const Banner = () => {
+const Banner = (props) => {
+  console.log("banner------->",props.shopNo)
   const [bannerData, setBannerData] = useState([]);
+  const shopbanners = [
+    [
+      //Bistro
+    "http://18.217.131.129:3000/public/uploads/banner1.jpeg",
+    "http://18.217.131.129:3000/public/uploads/banner2.jpeg",
+    // "http://18.217.131.129:3000/public/uploads/banner3.jpeg",
+    "http://18.217.131.129:3000/public/uploads/movie.jpeg",
+    "http://18.217.131.129:3000/public/uploads/event1.jpeg",
+    
+    
+  ],
+  [//Needs
+  "http://18.217.131.129:3000/public/uploads/shop2/needs1.jpg",
+  "http://18.217.131.129:3000/public/uploads/shop2/needs2.jpg",
+  "http://18.217.131.129:3000/public/uploads/shop2/needs3.jpg",
+    // "http://18.217.131.129:3000/public/uploads/banner3.jpeg",
+    "http://18.217.131.129:3000/public/uploads/movie.jpeg",
+    "http://18.217.131.129:3000/public/uploads/event1.jpeg",
+    
+    
+  ],
+  [//Sajni
+    // "https://images.vexels.com/media/users/3/126443/preview2/ff9af1e1edfa2c4a46c43b0c2040ce52-macbook-pro-touch-bar-banner.jpg",
+    "http://18.217.131.129:3000/public/uploads/shop3/sajni1.jpg",
+    "http://18.217.131.129:3000/public/uploads/shop3/sajni2.jpg",
+    "http://18.217.131.129:3000/public/uploads/shop3/sajni3.jpg",
+    // "http://18.217.131.129:3000/public/uploads/banner2.jpeg",
+    // "http://18.217.131.129:3000/public/uploads/banner3.jpeg",
+    "http://18.217.131.129:3000/public/uploads/movie.jpeg",
+    "http://18.217.131.129:3000/public/uploads/event1.jpeg",
+    
+  ],
+[//RSA
+    "http://18.217.131.129:3000/public/uploads/banner1.jpeg",
+    "http://18.217.131.129:3000/public/uploads/banner2.jpeg",
+    // "http://18.217.131.129:3000/public/uploads/banner3.jpeg",
+    "http://18.217.131.129:3000/public/uploads/movie.jpeg",
+    "http://18.217.131.129:3000/public/uploads/event1.jpeg",
+   
+    
+  ],
+  [//main
+  "http://18.217.131.129:3000/public/uploads/banner1.jpeg",
+  "http://18.217.131.129:3000/public/uploads/shop2/needs1.jpg",
+  "http://18.217.131.129:3000/public/uploads/shop3/sajni1.jpg",
+
+    // "http://18.217.131.129:3000/public/uploads/banner3.jpeg",
+    "http://18.217.131.129:3000/public/uploads/movie.jpeg",
+    "http://18.217.131.129:3000/public/uploads/event1.jpeg",
+   
+    
+  ]
+]
 
   useEffect(() => {
-    setBannerData([
-      "https://images.vexels.com/media/users/3/126443/preview2/ff9af1e1edfa2c4a46c43b0c2040ce52-macbook-pro-touch-bar-banner.jpg",
-      "https://i.imgur.com/XYviT0b.png",
-      // "https://pbs.twimg.com/media/D7P_yLdX4AAvJWO.jpg",
-      "https://i.imgur.com/bUFxGni.jpg",
-      "https://asset20.ckassets.com/blog/wp-content/uploads/sites/5/2018/02/Black-Widow.jpg",
-      //"https://drive.google.com/file/d/1ogZsY0UIBj8Eo3cALcpvLNfIZaJ80Ja4/view?usp=sharing/movie.png"
-      // "/movie.jpg",
-      
-    ]);
+    console.log("before-baneer==================>",props.shopNo)
+    setBannerData(shopbanners[props.shopNo? (props.shopNo-1) : (shopbanners.length-1)]);
 
     return () => {
       setBannerData([]);
@@ -55,7 +101,9 @@ const Banner = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "gainsboro",
+    // backgroundColor: "gainsboro",
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    
   },
   swiper: {
     width: width,

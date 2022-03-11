@@ -11,7 +11,7 @@ import EasyButton from "../../Shared/StyledComponents/EasyButton"
 import baseURL from "../../assets/common/baseUrl";
 import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage"
-import { add } from "react-native-reanimated";
+import store from "../../Redux/store";
 
 var { width } = Dimensions.get("window")
 
@@ -22,7 +22,7 @@ const Item = (props) => {
             <EasyButton
                 danger
                 medium
-                onPress={() => props.delete(props.item._id)}
+                onPress={() => props.delete(props.item.id)}
             >
                 <Text style={{ color: "white", fontWeight: "bold"}}>Delete</Text>
             </EasyButton>
@@ -35,6 +35,7 @@ const Categories = (props) => {
     const [categories, setCategories] = useState([]);
     const [categoryName, setCategoryName] = useState();
     const [token, setToken] = useState();
+    const state = store.getState();
 
     useEffect(() => {
         AsyncStorage.getItem("jwt")
@@ -44,8 +45,8 @@ const Categories = (props) => {
             .catch((error) => console.log(error));
 
         axios
-        .get(`${baseURL}categories`)
-        .then((res) => setCategories(res.data))
+        .get(`${baseURL}categories?shopNo=${state.shopNo}`)
+        .then((res) =>{ setCategories(res.data); console.log("categories",res.data)})
         .catch((error) => alert("Error to load categories"))
 
         return () => {
@@ -56,7 +57,8 @@ const Categories = (props) => {
 
     const addCategory = () => {
         const category = {
-            name: categoryName
+            name: categoryName,
+            shopNo:state.shopNo
         };
 
         const config = {
@@ -74,6 +76,7 @@ const Categories = (props) => {
     }
 
     const deleteCategory = (id) => {
+        console.log("delete category",id)
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,

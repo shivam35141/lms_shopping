@@ -4,6 +4,7 @@ import { Text, Left, Right, ListItem, Thumbnail, Body } from "native-base";
 
 const CartItem = (props) => {
   const data = props.item.item;
+  // console.log("data====>",data)
   return (
     <ListItem style={styles.listItem} key={Math.random()} avatar>
       <Left>
@@ -19,6 +20,7 @@ const CartItem = (props) => {
         <Left>
           <Text>{data.name}</Text>
         </Left>
+        <Text>qty: {data.quantity}</Text>
         <Right>
           <Text>₹ {data.price}</Text>
         </Right>

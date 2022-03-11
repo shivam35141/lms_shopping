@@ -17,10 +17,11 @@ export const loginUser = (user, dispatch) => {
     .then((res) => res.json())
     .then((data) => {
         if (data) {
+            console.log("user data from auth actions=================================>",data)
             const token = data.token;
             AsyncStorage.setItem("jwt", token)
             const decoded = jwt_decode(token)
-            dispatch(setCurrentUser(decoded, user))
+            dispatch(setCurrentUser(decoded, {...user,shopNo:data.shopNo}))
         } else {
            logoutUser(dispatch)
         }

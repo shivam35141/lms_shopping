@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect,useState } from 'react'
 import { View, Button } from 'react-native'
 import {
     Container,
@@ -15,13 +15,26 @@ import {
     Title
 } from 'native-base';
 import RNUpiPayment from 'react-native-upi-payment'
+import Toast from "react-native-toast-message";
+import { connect } from "react-redux";
+import * as actions from "../../../Redux/Actions/cartActions";
+import baseURL from "../../../assets/common/baseUrl";
+import axios from "axios";
+import AsyncStorage from "@react-native-community/async-storage"
 
 const methods = [
     { name: 'Cash on Delivery', value: 1 },
     // { name: 'Bank Transfer', value: 2 },
     // { name: 'Card Payment', value: 3},
-    {name:'UPI',value:4}
+    {name:'UPI - Phone Pay, Google Pay',value:4}
 ]
+const upiIds= [
+    {id:'lower7085900621@barodampay', payee:'Leimakhong Bistro'},
+    {id:'8968973210@ybl', payee:'Vardha Jain'},
+    {id:'lower7085900621@barodampay', payee:'Leimakhong Sajni'},
+    {id:'lower7085900621@barodampay', payee:'Leimakhong RFA'}
+]
+
 
 const paymentCards = [
     { name: 'Wallet', value: 1 },
@@ -29,13 +42,63 @@ const paymentCards = [
     { name: 'MasterCard', value: 3},
     { name: 'Other', value: 4}
 ]
+const updateOrder = (orderId) => {
+
+
+    const order = {
+      paymentStatus:true
+    };
+s
+    axios
+      .put(`${baseURL}orders/${orderId}`, order, config)
+      .then((res) => {
+        if (res.status == 200 || res.status == 201) {
+          Toast.show({
+            topOffset: 60,
+            type: "success",
+            text1: "Order Edited",
+            text2: "",
+          });
+        }
+      })
+      .catch((error) => {
+        Toast.show({
+          topOffset: 60,
+          type: "error",
+          text1: "Something went wrong",
+          text2: "Please try again",
+        });
+      });
+  };
 
 const Payment = (props) => {
+    // const [productUpdate, setProductUpdate] = useState();
 
     const order = props.route.params;
-
+    console.log(" in payment screen--->",order)
+    const [token, setToken] = useState();
     const [selected, setSelected] = useState();
     const [card, setCard] = useState();
+    AsyncStorage.getItem("jwt")
+    .then((res) => {
+        setToken(res);
+    })
+    .catch((error) => console.log(error));
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    // useEffect(() => {
+    //     console.log("getting order",order)
+    //       if(order) {
+    //         getProducts(order);
+    //       }
+    //     return () => {
+    //       setProductUpdate();
+    //     };
+    //   }, [props]);
+
     return(
        <Container>
            <Header>
@@ -58,15 +121,34 @@ const Payment = (props) => {
                })}
                {selected == 4 ? (
                   RNUpiPayment.initializePayment({
-                    vpa: '9767193942@upi', // or can be john@ybl or mobileNo@upi
-                    payeeName: 'Leimakhong Bistro',
-                    amount: '25',
-                    transactionRef: 'aasf-332-aoei-fn'
+                    // vpa: 'Q236459276@ybl', // or can be john@ybl or mobileNo@upi
+                    vpa: upiIds[order.order.shopNo-1].id, // or can be john@ybl or mobileNo@upi
+                    payeeName: upiIds[order.order.shopNo-1].payee,
+                    amount: order.order.totalPrice.toString() || '1',
+                    transactionRef: order.order.id
                   }, ()=>{
-
-                  }, ()=>{
-
-                  })
+                     
+                  updateOrder(order.order._id)
+                  console.log("success")
+                  Toast.show({
+                      topOffset: 60,
+                      type: "success",
+                      text1: "Order Completed",
+                      text2: "",
+                  });
+                  setTimeout(() => {
+                      props.clearCart();
+                      props.navigation.navigate("Cart");
+                  }, 500);
+            },  () => {
+                console.log("error")
+                Toast.show({
+                    topOffset: 60,
+                    type: "error",
+                    text1: "Something went wrong",
+                    text2: "Please try again",
+                  });
+            })
 
                ) : null }
                {/* {selected == 3 ? (
@@ -90,11 +172,47 @@ const Payment = (props) => {
                <View style={{ marginTop: 60, alignSelf: 'center' }}>
                        <Button 
                        title={"Confirm"} 
-                       onPress={() => props.navigation.navigate("Confirm", { order })}/>
+                       onPress={() =>{ Toast.show({
+                        topOffset: 60,
+                        type: "success",
+                        text1: "Order Completed",
+                        text2: "",
+                    });
+                    setTimeout(() => {
+                        props.clearCart();
+                        props.navigation.navigate("Cart");
+                    }, 500);} }/>
                </View>
            </Content>
        </Container>
     )
 }
 
-export default Payment;
+const mapDispatchToProps = (dispatch) => {
+    return {
+      clearCart: () => dispatch(actions.clearCart()),
+    };
+  };
+
+  // Add this
+  const getProducts = (x) => {
+    const order = x.order.order;
+    var products = [];
+    if(order) {
+        order.orderItems.forEach((cart) => {
+            axios
+              .get(`${baseURL}products/${cart.product}`)
+              .then((data) => {
+                products.push(data.data);
+                console.log("my products",products)
+                setProductUpdate(products);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          });
+    }
+    
+  };
+
+export default connect(null, mapDispatchToProps)(Payment);

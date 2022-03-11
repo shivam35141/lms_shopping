@@ -15,7 +15,7 @@ function MyStack() {
                 name="Products"
                 component={Products}
                 options={{
-                    title: "Products"
+                    title: "Admin Control"
                 }}
             />
             <Stack.Screen name="Categories" component={Categories} />

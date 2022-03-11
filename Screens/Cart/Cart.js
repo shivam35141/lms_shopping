@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
+// import { View, Text, StyleSheet, Button,Image } from "react-native";
 import {
   View,
   Dimensions,
   StyleSheet,
+  Image,
   TouchableOpacity,
 } from "react-native";
 import {
@@ -23,14 +25,15 @@ import * as actions from "../../Redux/Actions/cartActions";
 import AuthGlobal from "../../Context/store/AuthGlobal"
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
-import AsyncStorage from "@react-native-community/async-storage"
-
+import store from "../../Redux/store";
+var currentstore = store.getState();
 var { height, width } = Dimensions.get("window");
+
 
 const Cart = (props) => {
 
   const context = useContext(AuthGlobal);
-
+  // console.log("navi----",props.navigation)
   // Add this
   const [productUpdate, setProductUpdate] = useState()
   const [totalPrice, setTotalPrice] = useState()
@@ -46,11 +49,12 @@ const Cart = (props) => {
       var products = [];
       props.cartItems.forEach(cart => {
         axios.get(`${baseURL}products/${cart.product}`).then(data => {
-          products.push(data.data)
+          products.push({...data.data,quantity:cart.quantity})
+          // console.log("each product",products)
           setProductUpdate(products)
           var total = 0;
           products.forEach(product => {
-            const price = (total += product.price)
+            const price = (total += product.price*product.quantity)
               setTotalPrice(price)
           });
         })
@@ -64,7 +68,18 @@ const Cart = (props) => {
     <>
       {productUpdate ? (
         <Container>
-          <H1 style={{ alignSelf: "center" }}>Cart</H1>
+          <H1 style={{ alignSelf: "center",marginTop:40,fontWeight:"bold",color:"dodgerblue" }}>Your Cart</H1>
+          <View
+  style={{
+    borderBottomColor: 'grey',
+    borderBottomWidth: 1,
+    marginTop:10,
+    marginBottom:20,
+    width:140,
+    alignSelf:"center"
+    
+  }}
+/>
           <SwipeListView
             data={productUpdate}
             renderItem={(data) => (
@@ -74,7 +89,7 @@ const Cart = (props) => {
               <View style={styles.hiddenContainer}>
                 <TouchableOpacity 
                 style={styles.hiddenButton}
-                onPress={() => props.removeFromCart(data.item)}
+                onPress={() => {props.removeFromCart(data.item)}}
                 >
                   <Icon name="trash" color={"white"} size={30} />
                 </TouchableOpacity>
@@ -114,7 +129,7 @@ const Cart = (props) => {
                 <EasyButton
                   secondary
                   medium
-                  onPress={() => props.navigation.navigate("Login")}
+                  onPress={() => props.navigation.navigate("User")}
                 >
                 <Text style={{ color: 'white' }}>Login</Text>
                 </EasyButton>
@@ -125,18 +140,26 @@ const Cart = (props) => {
         </Container>
       ) : (
         <Container style={styles.emptyContainer}>
-          <Text>Sry, Looks like your cart is empty o_O</Text>
-          {/* <Text>Add products to your cart to get started</Text> */}
+          
+      {/* <Image style={styles.image} source={{ uri: 'https://i.imgur.com/ofKViFD.png' }} /> */}
+      
+      <Image style={styles.image} source={{ uri: 'http://18.217.131.129:3000/public/uploads/empty_cart.png' }} />
+          <Text style={{ color: 'grey' }}>Sry, Looks like your cart is empty o_O</Text>
+          {/* <Text style={{ color: 'grey' }}>Add products to your cart to get started</Text> */}
         </Container>
       )}
     </>
   );
 };
 
+
+//Pending ShopNo
 const mapStateToProps = (state) => {
   const { cartItems } = state;
+  console.log("cart items======>",cartItems)
   return {
-    cartItems: cartItems,
+    // cartItems: cartItems.filter(item=>{return item.shopNo==state.shopNo})
+    cartItems:cartItems
   };
 };
 
@@ -153,6 +176,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  image :{
+    marginBottom: 40,
+    marginTop:0,
+    width: 400, height: 300
+ 
+  },
   bottomContainer: {
       flexDirection: 'row',
       position: 'absolute',
@@ -164,7 +193,7 @@ const styles = StyleSheet.create({
   price: {
       fontSize: 18,
       margin: 20,
-      color: 'red'
+      color: 'orange'
   },
   hiddenContainer: {
     flex: 1,
