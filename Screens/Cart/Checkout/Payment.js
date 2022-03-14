@@ -30,7 +30,7 @@ const methods = [
 ]
 const upiIds= [
     {id:'lower7085900621@barodampay', payee:'Leimakhong Bistro'},
-    {id:'8968973210@ybl', payee:'Vardha Jain'},
+    {id:'REGFUNDACOC302ISUPP@SBI', payee:'Needs'},
     {id:'lower7085900621@barodampay', payee:'Leimakhong Sajni'},
     {id:'lower7085900621@barodampay', payee:'Leimakhong RFA'}
 ]

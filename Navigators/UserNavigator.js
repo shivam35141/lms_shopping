@@ -31,13 +31,13 @@ function MyStack() {
                       headerShown: false
                   }}
               />
-             {/* <Stack.Screen 
+             <Stack.Screen 
                 name="Register"
                 component={Register}
                 options={{
                     headerShown: false
                 }}
-            /> */}
+            />
             </>
             )}
         </Stack.Navigator>

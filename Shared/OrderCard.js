@@ -11,9 +11,9 @@ import axios from "axios";
 import baseURL from "../assets/common/baseUrl";
 
 const codes = [
-  { name: "received", code: "3" },
-  { name: "preparing", code: "2" },
-  { name: "Ready", code: "1" },
+  { name: "Received By Shop", code: "3" },
+  { name: "Order Preparing", code: "2" },
+  { name: "Ready for Pickup", code: "1" },
 ];
 
 const OrderCard = (props) => {
@@ -34,15 +34,15 @@ const OrderCard = (props) => {
 
     if (props.status == "3") {
       setOrderStatus(<TrafficLight unavailable></TrafficLight>);
-      setStatusText("received");
+      setStatusText("Received By Shop");
       setCardColor("#E74C3C");
     } else if (props.status == "2") {
       setOrderStatus(<TrafficLight limited></TrafficLight>);
-      setStatusText("preparing");
+      setStatusText("Order Preparing");
       setCardColor("#F1C40F");
     } else {
       setOrderStatus(<TrafficLight available></TrafficLight>);
-      setStatusText("Ready");
+      setStatusText("Ready for Pickup");
       setCardColor("#2ECC71");
     }
 
@@ -74,7 +74,6 @@ const OrderCard = (props) => {
       user: props.user,
       zip: props.zip,
     };
-    console.log("ModifyOrder===========>",order)
 
     axios
       .put(`${baseURL}orders/${props.id}`, order, config)

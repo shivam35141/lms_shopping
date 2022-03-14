@@ -67,7 +67,7 @@ const UserProfile = (props) => {
         <Container style={styles.container}>
 
             <View style={{flexDirection: "row"}}>
-                <View style={{marginTop:10}}>
+                <View style={{marginTop:40}}>
                     <Image style={styles.image} source={{ uri: 'http://18.217.131.129:3000/public/uploads/man_profile.png' }} />
                 </View>
 
@@ -81,13 +81,23 @@ const UserProfile = (props) => {
                         User ID :    {userProfile ? userProfile.email : ""}
                     </Text>
                     <Text style={{ margin: 5 }}>
-                        Phone  :      {userProfile ? userProfile.phone : ""}
+                        Phone  :     {userProfile ? userProfile.phone : ""}
                     </Text>
                     <View style={{ marginTop: 10 }}>
                         <Button title={"Sign Out"} onPress={() => [
                             AsyncStorage.removeItem("jwt"),
                             logoutUser(context.dispatch)
                         ]} />
+                    </View>
+                <View style={{ marginTop: 10 }}>
+                        <Button title={"Change Password"} 
+                        // onPress={() => [
+                        //     AsyncStorage.removeItem("jwt"),
+                        //     logoutUser(context.dispatch)
+                        // ]}
+                        
+                        onPress={() => props.navigation.navigate("Register")}
+                        />
                     </View>
                 </View>
             </View>
