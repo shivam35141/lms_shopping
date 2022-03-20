@@ -17,6 +17,7 @@ const Confirm = (props) => {
   const [productUpdate, setProductUpdate] = useState();
   useEffect(() => {
       if(finalOrder) {
+        console.log('final order--->',finalOrder.order.order.orderItems)
         getProducts(finalOrder);
       }
     return () => {
@@ -33,8 +34,9 @@ const Confirm = (props) => {
             axios
               .get(`${baseURL}products/${cart.product}`)
               .then((data) => {
+                data.data['orderQuantity']=cart.quantity;
                 products.push(data.data);
-                setProductUpdate([...products]);
+                setProductUpdate([...products,]);
               })
               .catch((e) => {
                 console.log(e);
@@ -86,12 +88,13 @@ const Confirm = (props) => {
                   return (
                     <ListItem style={styles.listItem} key={x.id} avatar>
                       <Left>
-                        <Thumbnail source={{ uri: x.image }} />
+                        <Thumbnail source={{ uri: x.image ||"https://cdn.pixabay.com/photo/2012/04/01/17/29/box-23649_960_720.png" }} />
                       </Left>
                       <Body style={styles.body}>
                         <Left>
                           <Text>{x.name}</Text>
                         </Left>
+                        <Text>qty:{x.orderQuantity}</Text>
                         <Right>
                           <Text>₹ {x.price}</Text>
                         </Right>

@@ -4,10 +4,10 @@ import { Container, Left, ListItem, Right } from "native-base"
 import { useFocusEffect } from "@react-navigation/native"
 import AsyncStorage from "@react-native-community/async-storage"
 import OrderCard from "../../Shared/OrderCard"
-
+import { connect } from 'react-redux';
 import axios from "axios"
 import baseURL from "../../assets/common/baseUrl"
-
+import * as actions from '../../Redux/Actions/shopActions';
 import AuthGlobal from "../../Context/store/AuthGlobal"
 import { logoutUser } from "../../Context/actions/Auth.actions"
 
@@ -19,7 +19,12 @@ const UserProfile = (props) => {
     const [userProfile, setUserProfile] = useState()
     const [orders, setOrders] = useState()
     console.log("user--------------------------->", userProfile)
-
+    const admin=context.stateUser.isAuthenticated && context.stateUser.user.isAdmin==true;
+    console.log("before error================================================================================================>",props.route)
+    const [shopNo,setShop]= useState(admin?(context.stateUser.userProfile.shopNo):((props.route.params)?props.route.params.shopNo : ''));
+    if(admin){
+        props.setShopNumber(shopNo)
+    }
     useFocusEffect(
         useCallback(() => {
             if (
@@ -35,7 +40,9 @@ const UserProfile = (props) => {
                         .get(`${baseURL}users/${context.stateUser.user.userId}`, {
                             headers: { Authorization: `Bearer ${res}` },
                         })
-                        .then((user) => setUserProfile(user.data))
+                        .then((user) => {
+                            setUserProfile(user.data)
+                        })
                 })
                 .catch((error) => console.log(error))
 
@@ -45,7 +52,7 @@ const UserProfile = (props) => {
                     const data = x.data;
                     console.log("user profile orders=============>",data[0].orderItems)
                     const userOrders = data.filter(
-                        (order) => order.user._id === context.stateUser.user.userId
+                        (order) => {return order.user._id === context.stateUser.user.userId}
                     );
                     setOrders(userOrders);
                 })
@@ -140,6 +147,13 @@ const UserProfile = (props) => {
     )
 }
 
+const mapToDispatchToProps = (dispatch) => {
+    return {
+      setShopNumber: (shop) => { dispatch(actions.setShopNo(shop))},
+    }
+  }
+  
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -175,4 +189,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default UserProfile;
+export default connect(null, mapToDispatchToProps)(UserProfile);

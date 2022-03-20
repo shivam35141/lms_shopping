@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
-  Button
+  Image
 } from "react-native";
 import { Header, Item, Input } from "native-base"
 import Icon from "react-native-vector-icons/FontAwesome"
@@ -16,7 +16,6 @@ import ListItem from "./ListItem"
 import axios from "axios"
 import baseURL from "../../assets/common/baseUrl"
 import AsyncStorage from "@react-native-community/async-storage"
-import EasyButton from "../../Shared/StyledComponents/EasyButton";
 import store from "../../Redux/store";
 
 var { height, width } = Dimensions.get("window")
@@ -27,18 +26,24 @@ const ListHeader = () => {
             elevation={1}
             style={styles.listHeader}
         >
-            <View style={styles.headerItem}></View>
+            {/* <View style={styles.headerItem}></View> */}
             {/* <View style={styles.headerItem}>
                 <Text style={{ fontWeight: '600'}}>Brand</Text>
             </View> */}
             <View style={styles.headerItem}>
                 <Text style={{ fontWeight: 'bold'}}>Name</Text>
             </View>
-            <View style={styles.headerItem}>
+            {/* <View style={styles.headerItem}>
                 <Text style={{ fontWeight: 'bold'}}>Category</Text>
+            </View> */}
+            <View style={styles.headerItem}>
+                <Text style={{ fontWeight: 'bold'}}>Wholesale Price</Text>
             </View>
             <View style={styles.headerItem}>
-                <Text style={{ fontWeight: 'bold'}}>Price</Text>
+                <Text style={{ fontWeight: 'bold'}}>Selling Price</Text>
+            </View>
+            <View style={styles.headerItem}>
+                <Text style={{ fontWeight: 'bold'}}>Profit</Text>
             </View>
             <View style={styles.headerItem}>
                 <Text style={{ fontWeight: 'bold'}}>Qty</Text>
@@ -47,14 +52,14 @@ const ListHeader = () => {
     )
 }
 
-const Products = (props) => {
+const ViewSummary = (props) => {
 
     const [productList, setProductList] = useState();
     const [productFilter, setProductFilter] = useState();
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState();
     const state = store.getState();
-    console.log("stat=====>",(state.shopNo))
+    console.log("stat=====>",state, state.shopNo)
 
     useFocusEffect(
         useCallback(
@@ -67,10 +72,15 @@ const Products = (props) => {
                     .catch((error) => console.log(error))
 
                 axios
-                    .get(`${baseURL}products?shopNo=${state.shopNo?Number(state.shopNo):0}`)
+                    .post(`${baseURL}orders/summary`,{shopNo:state.shopNo?Number(state.shopNo):0})
                     .then((res) => {
-                        setProductList(res.data);
-                        setProductFilter(res.data);
+                        // console.log(res.data, undefined, 2)
+                        let data= res.data.totalsales.map((item)=>{
+                            return {profit:((item.product_detail[0].price-(item.product_detail[0].wholesalePrice || 0))*item.count).toFixed(2),name:item.product_detail[0].name,price:item.product_detail[0].price,wholeSalePrice:item.product_detail[0].wholesalePrice,image:item.product_detail[0].image,...item}
+                        })
+                        // console.log("data",data)
+                        setProductList(data);
+                        setProductFilter(data);
                         setLoading(false);
                     })
 
@@ -83,17 +93,6 @@ const Products = (props) => {
             [],
         )
     )
-
-    const searchProduct = (text) => {
-        if (text == "") {
-            setProductFilter(productList)
-        }
-        setProductFilter(
-            productList.filter((i) => 
-                i.name.toLowerCase().includes(text.toLowerCase())
-            )
-        )
-    }
 
     const deleteProduct = (id) => {
         axios
@@ -109,46 +108,9 @@ const Products = (props) => {
 
   return (
     <View style={styles.container}>
-          <Button
-              onPress={() => props.navigation.navigate("ViewSummary")}
-              title="View Summary"
-              color="green"
-          />
-        <View style={styles.buttonContainer}>
-            <EasyButton
-                secondary
-                medium
-                onPress={() => props.navigation.navigate("Orders")}
-            >
-                <Icon name="shopping-bag" size={18} color="white" />
-                <Text style={styles.buttonText}>Orders</Text>
-            </EasyButton>
-            <EasyButton
-                secondary
-                medium
-                onPress={() => props.navigation.navigate("ProductForm")}
-            >
-                <Icon name="plus" size={18} color="white" />
-                <Text style={styles.buttonText}>Products</Text>
-            </EasyButton>
-            <EasyButton
-                secondary
-                medium
-                onPress={() => props.navigation.navigate("Categories")}
-            >
-                <Icon name="plus" size={18} color="white" />
-                <Text style={styles.buttonText}>Categories</Text>
-            </EasyButton>
-        </View>
       <View>
           <Header searchBar rounded>
-              <Item style={{ padding: 5 , borderRadius: 10}}>
-                  <Icon name="search" />
-                  <Input 
-                    placeholder="Search Products"
-                    onChangeText={(text) => searchProduct(text)}
-                  />
-              </Item>
+                  <Text style={styles.titleText}>Daily Summary</Text>
           </Header>
       </View>
 
@@ -161,14 +123,27 @@ const Products = (props) => {
             data={productFilter}
             ListHeaderComponent={ListHeader}
             renderItem={({ item, index }) => (
-                <ListItem 
-                    {...item}
-                    navigation={props.navigation}
-                    index={index}
-                    delete={deleteProduct}
-                />
+               <View  style={[styles.viewContainer, {
+                backgroundColor: index % 2 == 0 ? "white" : "gainsboro"
+            }]}>
+                   {/* <Image 
+                    source={{
+                        uri: item.image
+                        ? props.image
+                        : 'https://cdn.pixabay.com/photo/2012/04/01/17/29/box-23649_960_720.png'
+                    }}
+                    resizeMode="contain"
+                    style={styles.image}
+                /> */}
+                {/* <Text style={styles.item}>{props.brand}</Text> */}
+                <Text style={styles.item} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
+                <Text style={styles.item}  ellipsizeMode="tail">₹ {item.wholeSalePrice || 0}</Text>
+                <Text style={styles.item}>₹ {item.price}</Text>
+                <Text style={styles.item}>₹ {item.profit}</Text>
+                <Text style={styles.item}> {item.count}</Text>
+               </View>
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item._id}
           />
       )}
     </View>
@@ -194,6 +169,11 @@ const styles = StyleSheet.create({
         marginBottom: 160,
         backgroundColor: 'white'
     },
+    viewContainer:{
+        flexDirection: 'row',
+        padding: 5,
+        width: width
+    },
     buttonContainer: {
         margin: 20,
         alignSelf: 'center',
@@ -202,7 +182,24 @@ const styles = StyleSheet.create({
     buttonText: {
         marginLeft: 4,
         color: 'white'
-    }
+    },
+    titleText: {
+        fontSize: 20,
+        fontWeight: "bold",
+        padding:12
+      },
+      image: {
+        borderRadius: 50,
+        width: width / 6,
+        height: 20,
+        margin: 2
+    },
+    item: {
+        flexWrap: "wrap",
+        margin: 4,
+    
+        width: width / 4.8
+    },
 })
 
-export default Products;
+export default ViewSummary;

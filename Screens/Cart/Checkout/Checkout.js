@@ -9,6 +9,7 @@ import AuthGlobal from "../../../Context/store/AuthGlobal"
 import axios from "axios";
 import { connect } from 'react-redux'
 import baseURL from '../../../assets/common/baseUrl'
+import AsyncStorage from '@react-native-community/async-storage'
 
 // const countries = require("../../../assets/countries.json");
 
@@ -25,6 +26,19 @@ const Checkout = (props) => {
     const [ user, setUser ] = useState();
     const [totalPrice, setTotalPrice] = useState();
     useEffect(() => {
+        AsyncStorage.getItem("jwt")
+        .then((res) => {
+            axios
+                .get(`${baseURL}users/${context.stateUser.user.userId}`, {
+                    headers: { Authorization: `Bearer ${res}` },
+                })
+                .then((user) => {
+                   let name=capitalize(user.data.name);
+                   setName(name);
+                   setPhone(user.data.phone)
+                })
+        })
+        .catch((error) => console.log(error))
         setOrderItems(props.cartItems)
         getProducts();
         if(context.stateUser.isAuthenticated) {
@@ -82,6 +96,10 @@ const Checkout = (props) => {
 
         props.navigation.navigate("Confirm", {order:{order: order }})
     }
+
+    const capitalize=(str)=>{
+        return str.charAt(0).toUpperCase() + str.slice(1);
+        }
 
     return (
         <KeyboardAwareScrollView

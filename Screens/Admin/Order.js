@@ -28,7 +28,7 @@ const Orders = (props) => {
 
     const getOrders = () => {
         axios
-        .get(`${baseURL}orders?shopNo=${state.shopNo}`)
+        .get(`${baseURL}orders?shopNo=${state.shopNo?Number(state.shopNo):0}`)
         .then((x) => {
             setOrderList(x.data);
         })
