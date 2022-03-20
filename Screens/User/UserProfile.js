@@ -39,7 +39,9 @@ const UserProfile = (props) => {
                         .get(`${baseURL}users/${context.stateUser.user.userId}`, {
                             headers: { Authorization: `Bearer ${res}` },
                         })
-                        .then((user) => setUserProfile(user.data))
+                        .then((user) => {
+                            setUserProfile(user.data)
+                        })
                 })
                 .catch((error) => console.log(error))
 
@@ -49,7 +51,7 @@ const UserProfile = (props) => {
                     const data = x.data;
                     console.log("user profile orders=============>",data[0].orderItems)
                     const userOrders = data.filter(
-                        (order) => order.user._id === context.stateUser.user.userId
+                        (order) => {return order.user._id === context.stateUser.user.userId}
                     );
                     setOrders(userOrders);
                 })
