@@ -4,10 +4,10 @@ import { Container, Left, ListItem, Right } from "native-base"
 import { useFocusEffect } from "@react-navigation/native"
 import AsyncStorage from "@react-native-community/async-storage"
 import OrderCard from "../../Shared/OrderCard"
-
+import { connect } from 'react-redux';
 import axios from "axios"
 import baseURL from "../../assets/common/baseUrl"
-
+import * as actions from '../../Redux/Actions/shopActions';
 import AuthGlobal from "../../Context/store/AuthGlobal"
 import { logoutUser } from "../../Context/actions/Auth.actions"
 
@@ -19,7 +19,11 @@ const UserProfile = (props) => {
     const [userProfile, setUserProfile] = useState()
     const [orders, setOrders] = useState()
     console.log("user--------------------------->", userProfile)
-
+    const admin=context.stateUser.isAuthenticated && context.stateUser.user.isAdmin==true;
+    const [shopNo,setShop]= useState(admin?(context.stateUser.userProfile.shopNo):((props.route.params)?props.route.params.shopNo : ''));
+    if(admin){
+        props.setShopNumber(shopNo)
+    }
     useFocusEffect(
         useCallback(() => {
             if (
@@ -140,6 +144,13 @@ const UserProfile = (props) => {
     )
 }
 
+const mapToDispatchToProps = (dispatch) => {
+    return {
+      setShopNumber: (shop) => { dispatch(actions.setShopNo(shop))},
+    }
+  }
+  
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -175,4 +186,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default UserProfile;
+export default connect(null, mapToDispatchToProps)(UserProfile);

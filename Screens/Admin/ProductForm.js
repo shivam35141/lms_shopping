@@ -28,8 +28,9 @@ const ProductForm = (props) => {
     const [brand, setBrand] = useState();
     const [name, setName] = useState();
     const [price, setPrice] = useState();
+    const [wholesalePrice, setWholesalePrice] = useState();
     const [description, setDescription] = useState();
-    const [image, setImage] = useState();
+    // const [image, setImage] = useState();
     const [mainImage, setMainImage] = useState();
     const [category, setCategory] = useState();
     const [categories, setCategories] = useState([]);
@@ -52,6 +53,7 @@ const ProductForm = (props) => {
             setBrand(props.route.params.item.brand);
             setName(props.route.params.item.name);
             setPrice(props.route.params.item.price.toString());
+            setWholesalePrice(props.route.params.item.wholesalePrice.toString());
             setDescription(props.route.params.item.description);
             setMainImage(props.route.params.item.image);
             setImage(props.route.params.item.image);
@@ -67,7 +69,7 @@ const ProductForm = (props) => {
 
         // Categories
         axios
-            .get(`${baseURL}categories?shopNo=${state.shopNo}`)
+            .get(`${baseURL}categories?shopNo=${state.shopNo?Number(state.shopNo):0}`)
             .then((res) => setCategories(res.data))
             .catch((error) => alert("Error to load categories"));
 
@@ -120,6 +122,7 @@ const ProductForm = (props) => {
             name == "" ||
             brand == "" ||
             price == "" ||
+            wholesalePrice=="" ||
             description == "" ||
             category == "" ||
             countInStock == ""
@@ -129,16 +132,17 @@ const ProductForm = (props) => {
 
         let formData = new FormData();
 
-        const newImageUri = "file:///" + image.split("file:/").join("");
+        // const newImageUri = "file:///" + image.split("file:/").join("");
 
-        formData.append("image", {
-            uri: newImageUri,
-            type: mime.getType(newImageUri),
-            name: newImageUri.split("/").pop()
-        });
+        // formData.append("image", {
+        //     uri: newImageUri,
+        //     type: mime.getType(newImageUri),
+        //     name: newImageUri.split("/").pop()
+        // });
         formData.append("name", name);
         formData.append("brand", brand);
         formData.append("price", price);
+        formData.append("wholesalePrice", wholesalePrice);
         formData.append("description", description);
         formData.append("category", category);
         formData.append("countInStock", countInStock);
@@ -208,12 +212,12 @@ const ProductForm = (props) => {
 
     return (
        <FormContainer title="Add Product">
-           <View style={styles.imageContainer}>
+           {/* <View style={styles.imageContainer}>
                <Image style={styles.image} source={{uri: mainImage}}/>
                <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
                    <Icon style={{ color: "white"}} name="camera"/>
                </TouchableOpacity>
-           </View>
+           </View> */}
            <View style={styles.label}>
                <Text style={{ textDecorationLine: "underline"}}>Brand</Text>
            </View>
@@ -244,6 +248,17 @@ const ProductForm = (props) => {
             value={price}
             keyboardType={"numeric"}
             onChangeText={(text) => setPrice(text)}
+           />
+            <View style={styles.label}>
+               <Text style={{ textDecorationLine: "underline"}}>Wholesale Price</Text>
+           </View>
+           <Input 
+            placeholder="Wholesale Price"
+            name="wholesalePrice"
+            id="wholesalePrice"
+            value={wholesalePrice}
+            keyboardType={"numeric"}
+            onChangeText={(text) => setWholesalePrice(text)}
            />
             <View style={styles.label}>
                <Text style={{ textDecorationLine: "underline"}}>Count in Stock</Text>

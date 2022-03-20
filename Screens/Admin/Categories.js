@@ -45,7 +45,7 @@ const Categories = (props) => {
             .catch((error) => console.log(error));
 
         axios
-        .get(`${baseURL}categories?shopNo=${state.shopNo}`)
+        .get(`${baseURL}categories?shopNo=${state.shopNo?Number(state.shopNo):0}`)
         .then((res) =>{ setCategories(res.data); console.log("categories",res.data)})
         .catch((error) => alert("Error to load categories"))
 
@@ -58,7 +58,7 @@ const Categories = (props) => {
     const addCategory = () => {
         const category = {
             name: categoryName,
-            shopNo:state.shopNo
+            shopNo:state.shopNo?Number(state.shopNo):0
         };
 
         const config = {

@@ -121,10 +121,11 @@ const OrderCard = (props) => {
         <Text>Date Ordered: {props.dateOrdered.split("T")[0]}</Text>
         <Text style={{marginTop:10}}>Order Items</Text>
         {props.orderItems.map((item, index) => {
+          console.log(item.product)
                    return (
                        <ListItem key={item._id}>
                            <Left>
-                            <Text>{item.product.name}</Text>
+                            <Text>{item.product?item.product.name:''}</Text>
                            </Left>
                            <Right>
                            <Text>qty:{item.quantity}</Text>
