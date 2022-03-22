@@ -6,12 +6,11 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
-  Image
+  Button
 } from "react-native";
-import { Header, Item, Input } from "native-base"
-import Icon from "react-native-vector-icons/FontAwesome"
+import { Header } from "native-base"
 import { useFocusEffect } from "@react-navigation/native"
-import ListItem from "./ListItem"
+import DatePicker from 'react-native-date-picker'
 
 import axios from "axios"
 import baseURL from "../../assets/common/baseUrl"
@@ -53,17 +52,42 @@ const ListHeader = () => {
 }
 
 const ViewSummary = (props) => {
-
+    
     const [productList, setProductList] = useState();
     const [productFilter, setProductFilter] = useState();
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState();
     const state = store.getState();
+    const [date, setDate] = useState(new Date())
+    const [open, setOpen] = useState(false)
     console.log("stat=====>",state, state.shopNo)
+
+    const getSummary = (date) => {
+        console.log("date getSummary=======>", date)
+    
+        axios
+            .post(`${baseURL}orders/summary`, { shopNo: state.shopNo ? Number(state.shopNo) : 0, date: date })
+            .then((res) => {
+                console.log("summary data----->",res.data.totalsales)
+                let data = res.data.totalsales.map((item) => {
+                    return { profit: ((item.product_detail[0].price - (item.product_detail[0].wholesalePrice || 0)) * item.count).toFixed(2), name: item.product_detail[0].name, price: item.product_detail[0].price, wholeSalePrice: item.product_detail[0].wholesalePrice, image: item.product_detail[0].image, ...item }
+                })
+                setProductList(data);
+                setProductFilter(data);
+                setLoading(false);
+            })
+    
+        return () => {
+            setProductList();
+            setProductFilter();
+            setLoading(true);
+        }
+    }
 
     useFocusEffect(
         useCallback(
             () => {
+                console.log("date now======<")
                 // Get Token
                 AsyncStorage.getItem("jwt")
                     .then((res) => {
@@ -75,6 +99,7 @@ const ViewSummary = (props) => {
                     .post(`${baseURL}orders/summary`,{shopNo:state.shopNo?Number(state.shopNo):0})
                     .then((res) => {
                         // console.log(res.data, undefined, 2)
+                        console.log("summary data----->",res.data.totalsales)
                         let data= res.data.totalsales.map((item)=>{
                             return {profit:((item.product_detail[0].price-(item.product_detail[0].wholesalePrice || 0))*item.count).toFixed(2),name:item.product_detail[0].name,price:item.product_detail[0].price,wholeSalePrice:item.product_detail[0].wholesalePrice,image:item.product_detail[0].image,...item}
                         })
@@ -94,18 +119,6 @@ const ViewSummary = (props) => {
         )
     )
 
-    const deleteProduct = (id) => {
-        axios
-            .delete(`${baseURL}products/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((res) => {
-                const products = productFilter.filter((item) => item.id !== id)
-                setProductFilter(products)
-            })
-            .catch((error) => console.log(error));
-    }
-
   return (
     <View style={styles.container}>
       <View>
@@ -113,6 +126,21 @@ const ViewSummary = (props) => {
                   <Text style={styles.titleText}>Daily Summary</Text>
           </Header>
       </View>
+      <Button title="Select Date" onPress={() => setOpen(true)} />
+      <DatePicker
+        modal
+        open={open}
+        mode="date"
+        date={date}
+        onConfirm={(date) => {
+          setOpen(false)
+          setDate(date)
+          getSummary(date)
+        }}
+        onCancel={() => {
+          setOpen(false)
+        }}
+      />
 
       {loading ? (
           <View style={styles.spinner}> 
