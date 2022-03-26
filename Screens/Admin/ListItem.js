@@ -55,13 +55,13 @@ const ListItem = (props) => {
                         >
                             <Text style={styles.textStyle}>Edit</Text>
                         </EasyButton>
-                        <EasyButton 
+                        {/* <EasyButton 
                         medium 
                         danger
                         onPress={() => [props.delete(props.id), setModalVisible(false)]}
                         >
                             <Text style={styles.textStyle}>Delete</Text>
-                        </EasyButton>
+                        </EasyButton> */}
                     </View>
                 </View>
 
@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         padding: 5,
-        width: width
+        width: width,
+        marginBottom : 15
     },
     image: {
         borderRadius: 50,

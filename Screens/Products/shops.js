@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View, Dimensions, Text, Button, StyleSheet, Image, } from 'react-native';
+import { TouchableOpacity, View, Dimensions, ScrollView,Text, Button, StyleSheet, Image, } from 'react-native';
 // import React, { useState } from 'react';
 // import { View, ScrollView, StyleSheet } from 'react-native';
 // import { Button, ButtonGroup, withTheme, Text } from 'react-native-elements';
@@ -11,9 +11,9 @@ import baseURL from "../../assets/common/baseUrl";
 import store from "../../Redux/store";
 var { width } = Dimensions.get("window");
 var currentstore;
-const unsubscribe = store.subscribe(() =>{
-currentstore=store.getState()
-console.log(currentstore);
+const unsubscribe = store.subscribe(() => {
+    currentstore = store.getState()
+    console.log(currentstore);
 }
 );
 
@@ -90,23 +90,26 @@ const Shops = (props) => {
                 <Banner />
             </View>
 
+<ScrollView>
             <View style={[styles.layout]}>
-                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() =>{ 
+                
+                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() => {
                     props.setShopNo('1');
-                    console.log("now state is==>",currentstore)
+                    console.log("now state is==>", currentstore)
                     props.clearCart();
-                    props.navigation.navigate("Home", { shopNo: '1' })}}>
+                    props.navigation.navigate("Home", { shopNo: '1' })
+                }}>
                     <Image
                         style={styles.image}
                         resizeMode="contain"
                         source={{ uri: 'http://18.217.131.129:3000/public/uploads/bistro.png' }}
                     />
                     <Text style={styles.title}>Bistro</Text></TouchableOpacity>
-                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() =>{
-                     props.setShopNo('2');
-                     console.log("now state is==>",currentstore)
-                     props.clearCart();
-                     props.navigation.navigate("Home", { shopNo: '2' })
+                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() => {
+                    props.setShopNo('2');
+                    console.log("now state is==>", currentstore)
+                    props.clearCart();
+                    props.navigation.navigate("Home", { shopNo: '2' })
                 }}>
                     <Image
                         style={styles.image}
@@ -115,11 +118,11 @@ const Shops = (props) => {
                     />
 
                     <Text style={styles.title}>Needs</Text></TouchableOpacity>
-                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() =>{
-                     props.setShopNo('3');
-                     console.log("now state is==>",currentstore)
-                     props.clearCart();
-                     props.navigation.navigate("Home", { shopNo: '3' })
+                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() => {
+                    props.setShopNo('3');
+                    console.log("now state is==>", currentstore)
+                    props.clearCart();
+                    props.navigation.navigate("Home", { shopNo: '3' })
                 }}>
                     <Image
                         style={styles.image}
@@ -128,19 +131,62 @@ const Shops = (props) => {
                     />
 
                     <Text style={styles.title}>Sajni</Text></TouchableOpacity>
-                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() =>{
-                     props.setShopNo('4');
-                     props.clearCart();
-                     props.navigation.navigate("Home", { shopNo: '4' })
+
+
+                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() => {
+                    props.setShopNo('4');
+                    props.clearCart();
+                    props.navigation.navigate("Home", { shopNo: '4' })
                 }}>
                     <Image
                         style={styles.image}
                         resizeMode="contain"
-                        source={{ uri: 'http://18.217.131.129:3000/public/uploads/rsa.png' }}
+                        source={{ uri: 'http://18.217.131.129:3000/public/uploads/rsa_snacks.png' }}
                     />
 
-                    <Text style={styles.title}>RSA</Text></TouchableOpacity>
+                    <Text style={styles.title}>RSA Snacks</Text></TouchableOpacity>
+
+                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() => {
+                    props.setShopNo('5');
+                    props.clearCart();
+                    props.navigation.navigate("Home", { shopNo: '5' })
+                }}>
+                    <Image
+                        style={styles.image}
+                        resizeMode="contain"
+                        source={{ uri: 'http://18.217.131.129:3000/public/uploads/rsa_bar.png' }}
+                    />
+
+                    <Text style={styles.title}>RSA Bar</Text></TouchableOpacity>
+
+                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() => {
+                    props.setShopNo('6');
+                    props.clearCart();
+                    props.navigation.navigate("Home", { shopNo: '6' })
+                }}>
+                    <Image
+                        style={styles.image}
+                        resizeMode="contain"
+                        source={{ uri: 'http://18.217.131.129:3000/public/uploads/rsa_bakery.png' }}
+                    />
+
+                    <Text style={styles.title}>RSA Bakery</Text></TouchableOpacity>
+
+                <TouchableOpacity navigation={props.navigation} style={styles.box} onPress={() => {
+                    props.setShopNo('7');
+                    props.clearCart();
+                    props.navigation.navigate("Home", { shopNo: '7' })
+                }}>
+                    <Image
+                        style={styles.image}
+                        resizeMode="contain"
+                        source={{ uri: 'http://18.217.131.129:3000/public/uploads/rsa_popcorn.png' }}
+                    />
+
+                    <Text style={styles.title}>RSA Popcorn</Text></TouchableOpacity>
+
             </View>
+            </ScrollView>
         </View>
 
 
@@ -196,16 +242,16 @@ const Shops = (props) => {
 // })
 const mapStateToProps = (state) => {
     const { shopNum } = state;
-    console.log("cart items in shop.js======>",shopNum)
+    console.log("cart items in shop.js======>", shopNum)
     return {
-      // cartItems: cartItems.filter(item=>{return item.shopNo==state.shopNo})
-      shopNo:shopNum
+        // cartItems: cartItems.filter(item=>{return item.shopNo==state.shopNo})
+        shopNo: shopNum
     };
-  };
+};
 const mapToDispatchToProps = (dispatch) => {
     return {
-        setShopNo: (shop) => { dispatch(actions.setShopNo(shop))},
-        clearCart: () => {dispatch(cartactions.clearCart())}
+        setShopNo: (shop) => { dispatch(actions.setShopNo(shop)) },
+        clearCart: () => { dispatch(cartactions.clearCart()) }
     }
 }
 
@@ -214,6 +260,7 @@ const mapToDispatchToProps = (dispatch) => {
 const styles = StyleSheet.create({
     container: {
         marginTop: 50,
+        // height: height * 2,
         // justifyContent:'center',
         // position:'absolute',
         flex: 1,
@@ -224,7 +271,7 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         flexWrap: "wrap",
         backgroundColor: "gainsboro",
-        marginTop:15
+        marginTop: 15
     },
 
     image: {
@@ -239,10 +286,10 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 20,
         textAlign: 'center',
-        color: "white",
+        color: "grey",
         // marginTop:20
-        position:"absolute",
-        bottom:20
+        position: "absolute",
+        bottom: 20
 
     },
 

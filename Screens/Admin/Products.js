@@ -12,12 +12,15 @@ import { Header, Item, Input } from "native-base"
 import Icon from "react-native-vector-icons/FontAwesome"
 import { useFocusEffect } from "@react-navigation/native"
 import ListItem from "./ListItem"
-
+var RNFS = require('react-native-fs');
+import XLSX from 'xlsx'
 import axios from "axios"
 import baseURL from "../../assets/common/baseUrl"
 import AsyncStorage from "@react-native-community/async-storage"
 import EasyButton from "../../Shared/StyledComponents/EasyButton";
 import store from "../../Redux/store";
+import Toast from "react-native-toast-message";
+
 
 var { height, width } = Dimensions.get("window")
 
@@ -107,6 +110,59 @@ const Products = (props) => {
             .catch((error) => console.log(error));
     }
 
+
+    const exportDataToExcel = () => {
+
+        // Created Sample data
+        let sample_data_to_export = productFilter.map((ele,index)=>{
+            return {
+            SrNo:index+1,
+            Item:ele.name,
+            Brand:ele.brand,
+            ItemDescription:ele.description,
+            QtyAvailable:ele.countInStock,
+            // SaleQty:ele.count,
+            wholeSalePrice:ele.wholesalePrice,
+            // wAmt:ele.wholeSalePrice*ele.count,
+            SellingPrice:ele.price,
+            // rAmt:ele.price*ele.count,
+            // Profit:ele.profit,
+            // CLedgerBal:ele.product_detail[0].countInStock,
+        }
+    
+        })
+    
+        // let sample_data_to_export = productFilter
+        let date = new Date()
+
+        let wb = XLSX.utils.book_new();
+        let ws = XLSX.utils.json_to_sheet(sample_data_to_export)    
+        XLSX.utils.book_append_sheet(wb,ws,"Users")
+        const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
+        // console.log(date)
+    
+        // Write generated excel to Storage
+        RNFS.writeFile(RNFS.ExternalStorageDirectoryPath + '/AllProducts ' +date.toDateString()+ '.xlsx', wbout, 'ascii').then((r)=>{
+         console.log('Success');
+         Toast.show({
+            topOffset: 60,
+            type: "success",
+            text1: "Downloaded Succusfully",
+            text2: "",
+        });
+        }).catch((e)=>{
+          console.log('Error', e);
+          Toast.show({
+            topOffset: 60,
+            type: "error",
+            text1: "Something went wrong",
+            text2: "Please try again",
+          });
+        });
+    
+      }
+     
+
   return (
     <View style={styles.container}>
           <Button
@@ -149,6 +205,23 @@ const Products = (props) => {
                     onChangeText={(text) => searchProduct(text)}
                   />
               </Item>
+
+              {/* <Button style={{ height:20 , borderRadius: 20}}
+             
+              title="Export Items"
+              color="gainsboro"
+          /> */}
+
+<EasyButton
+                // secondary
+                primary
+                // export
+                medium
+                onPress={() => exportDataToExcel()}
+            >
+                <Icon name="upload" size={18} color="gainsboro" />
+                <Text style={styles.buttonText}> Excel</Text>
+            </EasyButton>
           </Header>
       </View>
 

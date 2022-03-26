@@ -23,7 +23,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage"
 
 const methods = [
-    { name: 'Cash on Delivery', value: 1 },
+    { name: 'Pay at Shop using Debit/Credit Card', value: 1 },
     // { name: 'Bank Transfer', value: 2 },
     // { name: 'Card Payment', value: 3},
     {name:'UPI - Phone Pay, Google Pay',value:4}
@@ -31,8 +31,11 @@ const methods = [
 const upiIds= [
     {id:'lower7085900621@barodampay', payee:'Leimakhong Bistro'},
     {id:'REGFUNDACOC302ISUPP@SBI', payee:'Needs'},
-    {id:'lower7085900621@barodampay', payee:'Leimakhong Sajni'},
-    {id:'lower7085900621@barodampay', payee:'Leimakhong RFA'}
+    {id:'awwasakhishop@sbi', payee:'Sajni Leimakhong'},
+    {id:'lower7085900621@barodampay', payee:'RSA Snacks'},
+    {id:'lower7085900621@barodampay', payee:'RSA Bar'},
+    {id:'lower7085900621@barodampay', payee:'RSA Bakery'},
+    {id:'lower7085900621@barodampay', payee:'RSA Popcorn'}
 ]
 
 
@@ -119,38 +122,10 @@ const Payment = (props) => {
                        </ListItem>
                    )
                })}
-               {selected == 4 ? (
-                  RNUpiPayment.initializePayment({
-                    // vpa: 'Q236459276@ybl', // or can be john@ybl or mobileNo@upi
-                    vpa: upiIds[order.order.shopNo-1].id, // or can be john@ybl or mobileNo@upi
-                    payeeName: upiIds[order.order.shopNo-1].payee,
-                    amount: order.order.totalPrice.toString() || '1',
-                    transactionRef: order.order.id
-                  }, ()=>{
-                     
-                  updateOrder(order.order._id)
-                  console.log("success")
-                  Toast.show({
-                      topOffset: 60,
-                      type: "success",
-                      text1: "Order Completed",
-                      text2: "",
-                  });
-                  setTimeout(() => {
-                      props.clearCart();
-                      props.navigation.navigate("Cart");
-                  }, 500);
-            },  () => {
-                console.log("error")
-                Toast.show({
-                    topOffset: 60,
-                    type: "error",
-                    text1: "Something went wrong",
-                    text2: "Please try again",
-                  });
-            })
+               {/* {selected == 4 ? (
+               
 
-               ) : null }
+               ) : null } */}
                {/* {selected == 3 ? (
                    <Picker
                     mode="dropdown"
@@ -172,7 +147,10 @@ const Payment = (props) => {
                <View style={{ marginTop: 60, alignSelf: 'center' }}>
                        <Button 
                        title={"Confirm"} 
-                       onPress={() =>{ Toast.show({
+                       onPress={() =>{ 
+
+                        if(selected==1){
+                         Toast.show({
                         topOffset: 60,
                         type: "success",
                         text1: "Order Completed",
@@ -181,7 +159,53 @@ const Payment = (props) => {
                     setTimeout(() => {
                         props.clearCart();
                         props.navigation.navigate("Cart");
-                    }, 500);} }/>
+                    }, 500);
+                    }
+                    else if(selected==4){
+                      RNUpiPayment.initializePayment({
+                        // vpa: 'Q236459276@ybl', // or can be john@ybl or mobileNo@upi
+                        vpa: upiIds[order.order.shopNo-1].id, // or can be john@ybl or mobileNo@upi
+                        payeeName: upiIds[order.order.shopNo-1].payee,
+                        amount: order.order.totalPrice.toString() || '1',
+                        transactionRef: order.order.id
+                      }, (success)=>{
+                         console.log(success)
+                      updateOrder(order.order._id)
+                      console.log("success")
+                      Toast.show({
+                          topOffset: 60,
+                          type: "success",
+                          text1: "Order Completed",
+                          text2: "",
+                      });
+                      setTimeout(() => {
+                          props.clearCart();
+                          props.navigation.navigate("Cart");
+                      }, 500);
+                },  (err) => {
+                    console.log("error",err)
+                    if(err.Status=='failed' || err.status=="FAILURE"){
+                    Toast.show({
+                        topOffset: 60,
+                        type: "error",
+                        text1: "Something went wrong",
+                        text2: "Please try again",
+                      });
+                    } 
+                    else if(err.Status=='Success' || err.status=='SUCCESS'){
+                      Toast.show({
+                        topOffset: 60,
+                        type: "success",
+                        text1: "Order Completed",
+                        text2: "",
+                    });
+                    setTimeout(() => {
+                        props.clearCart();
+                        props.navigation.navigate("Cart");
+                    }, 500);
+                    }
+                })
+                    } }}/>
                </View>
            </Content>
        </Container>

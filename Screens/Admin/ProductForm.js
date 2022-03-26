@@ -55,8 +55,8 @@ const ProductForm = (props) => {
             setPrice(props.route.params.item.price.toString());
             setWholesalePrice(props.route.params.item.wholesalePrice.toString());
             setDescription(props.route.params.item.description);
-            setMainImage(props.route.params.item.image);
-            setImage(props.route.params.item.image);
+            // setMainImage(props.route.params.item.image);
+            // setImage(props.route.params.item.image);
             setCategory(props.route.params.item.category._id);
             setCountInStock(props.route.params.item.countInStock.toString());
         }
@@ -101,10 +101,10 @@ const ProductForm = (props) => {
         });
         console.log("image",result)
 
-        if (!result.cancelled) {
-            setMainImage(result.uri);
-            setImage(result.uri);
-        }
+        // if (!result.cancelled) {
+        //     setMainImage(result.uri);
+        //     setImage(result.uri);
+        // }
     };
     // const pickImage = async () => {
     //     console.log("open images====================>")
@@ -222,27 +222,27 @@ const ProductForm = (props) => {
                <Text style={{ textDecorationLine: "underline"}}>Brand</Text>
            </View>
            <Input 
-            placeholder="Brand"
+            placeholder="Item Brand"
             name="brand"
             id="brand"
             value={brand}
             onChangeText={(text) => setBrand(text)}
            />
            <View style={styles.label}>
-               <Text style={{ textDecorationLine: "underline"}}>Name</Text>
+               <Text style={{ textDecorationLine: "underline"}}>Item Name</Text>
            </View>
            <Input 
-            placeholder="Name"
+            placeholder="Item Name"
             name="name"
             id="name"
             value={name}
             onChangeText={(text) => setName(text)}
            />
             <View style={styles.label}>
-               <Text style={{ textDecorationLine: "underline"}}>Price</Text>
+               <Text style={{ textDecorationLine: "underline"}}>Selling Price</Text>
            </View>
            <Input 
-            placeholder="Price"
+            placeholder="Selling Price"
             name="price"
             id="price"
             value={price}

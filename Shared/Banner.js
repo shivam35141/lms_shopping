@@ -39,7 +39,7 @@ const Banner = (props) => {
     "http://18.217.131.129:3000/public/uploads/event1.jpeg",
     
   ],
-[//RSA
+[//RSA Drinks
     "http://18.217.131.129:3000/public/uploads/banner1.jpeg",
     "http://18.217.131.129:3000/public/uploads/banner2.jpeg",
     // "http://18.217.131.129:3000/public/uploads/banner3.jpeg",
@@ -48,6 +48,37 @@ const Banner = (props) => {
    
     
   ],
+
+[//RSA Snacks
+"http://18.217.131.129:3000/public/uploads/banner1.jpeg",
+"http://18.217.131.129:3000/public/uploads/banner2.jpeg",
+// "http://18.217.131.129:3000/public/uploads/banner3.jpeg",
+"http://18.217.131.129:3000/public/uploads/movie.jpeg",
+"http://18.217.131.129:3000/public/uploads/event1.jpeg",
+
+
+],
+
+[//RSA Bakery
+"http://18.217.131.129:3000/public/uploads/banner1.jpeg",
+"http://18.217.131.129:3000/public/uploads/banner2.jpeg",
+// "http://18.217.131.129:3000/public/uploads/banner3.jpeg",
+"http://18.217.131.129:3000/public/uploads/movie.jpeg",
+"http://18.217.131.129:3000/public/uploads/event1.jpeg",
+
+
+],
+
+[//RSA Popcorns
+"http://18.217.131.129:3000/public/uploads/banner1.jpeg",
+"http://18.217.131.129:3000/public/uploads/banner2.jpeg",
+// "http://18.217.131.129:3000/public/uploads/banner3.jpeg",
+"http://18.217.131.129:3000/public/uploads/movie.jpeg",
+"http://18.217.131.129:3000/public/uploads/event1.jpeg",
+
+
+],
+
   [//main
   "http://18.217.131.129:3000/public/uploads/banner1.jpeg",
   "http://18.217.131.129:3000/public/uploads/shop2/needs1.jpg",
